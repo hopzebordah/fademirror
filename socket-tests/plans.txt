@@ -1,0 +1,4 @@
+need to put ports and address information in a props file
+and pull it everywhere it's needed into the app to prevent having to dig around to change data
+need to also split the ws and http servers up better, create structure
+maybe need to also find a way to run both server scripts with one command, reliably?
