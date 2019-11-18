@@ -49,14 +49,8 @@ function calculateAndSendThumbLocation(event, xy_map) {
     if (isNaN(mouseX) || isNaN(mouseY))
         return;
 
-    if (mouseX > 100)
-        mouseX = 100;
-    if (mouseX < 0) 
-        mouseX = 0;
-    if (mouseY > 100) 
-        mouseY = 100;
-    if (mouseY < 0) 
-        mouseY = 0;
+    mouseX = checkBounds(mouseX);
+    mouseY = checkBounds(mouseY);
 
     if (DEBUG)
         console.log(mouseX + ':' + mouseY);
@@ -66,7 +60,6 @@ function calculateAndSendThumbLocation(event, xy_map) {
 }
 
 function configureColorPicker(color_picker, xy_drag_map) {
-
     let randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
     color_picker.value = randomColor;
     xy_drag_map.style.backgroundColor = randomColor;
@@ -78,8 +71,20 @@ function configureColorPicker(color_picker, xy_drag_map) {
 }
 
 function buildThumbControlObject(x, y) {
+
+    x = Math.round(mapRange(x, 0, 100, 1, 64));
+    y = Math.round(mapRange(y, 0, 100, 1, 64));
+
     const func = function_dropdown.value;
     const ttl = Number(ttl_input.value);
     const rgb = color_picker.value;
     return new ThumbControlData(x, y, func, ttl, rgb);
+}
+
+function checkBounds(val) {
+    if (val > 100)
+        return 100;
+    if (val < 0)
+        return 0;
+    return val;
 }

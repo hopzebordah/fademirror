@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Fademirror Thumb Control</title>
+    <title>Fademirror Presets</title>
     <meta name="viewport" content="width=device-width, user-scalable=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/styles/styles-master.css"/>
 </head>
 <body>
-    
+
     <div class="pos-f-t">
         <nav class="navbar navbar-dark bg-dark">
             <h1 class="text-light float-left">Fademirror</h1>
@@ -19,13 +19,13 @@
             <div class="bg-dark pl-4 pb-4">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Home</a>
+                        <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/thumb-control">Thumb Control</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/presets">Presets</a>
+                        <a class="nav-link active" href="#">Presets</a>
                     </li>
                 </ul>
             </div>
@@ -34,24 +34,8 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12 mt-3">
-                <div id="xy-drag-map"></div>
-            </div>
-            <div class="col-6 mt-3">
-                <select class="form-control" id="function-dropdown">
-                    <option value="dot">Dot</option>
-                    <option value="burst">Burst</option>
-                    <option value="pulse">Pulse</option>
-                </select>
-            </div>
-            <div class="col-3 mt-3">
-                <input id="ttl-input" type="number" min="1" max="999" placeholder="TTL"/>
-            </div>
-            <div class="col-3 mt-3">
-                <input id="color-input" type="color" value="0xFF0000"/>
-            </div>
-            <div class="col-12 mt-3 text-center d-none">
-                <button id="send-button" type="button" class="btn btn-primary">Send Command</button>
+            <div class="col-12">
+                <h1>Fademirror presets</h1>
             </div>
         </div>
     </div>
@@ -61,16 +45,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     
     <script src="/static/scripts/libraries/socket-io-2.3.0/socket.io.js"></script>
-    
-    <!-- /common scripts -->
-
-    <script src="/static/scripts/common/util.js"></script>
-    <script src="/static/scripts/common/socket_bindings.js"></script>
-    <script src="/static/scripts/common/dto_objects.js"></script>
-
-    <!-- /thumb-control scripts -->
-    <script src="/static/scripts/thumb-control/socket-functions.js"></script>
-    <script src="/static/scripts/thumb-control/dom-bindings.js"></script>
 
 </body>
 </html>

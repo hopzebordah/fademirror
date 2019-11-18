@@ -14,6 +14,10 @@ def handle_get_index():
 def handle_get_thumb_control():
     return render_template('thumb-control.html')
 
+@app.route('/presets')
+def handle_get_presets():
+    return render_template('presets.html')
+
 @socketio.on('connected')
 def handle_connected_event(json):
     print('[+] client websocket connected')
