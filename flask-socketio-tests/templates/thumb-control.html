@@ -34,21 +34,24 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12">
-                <div id="xyMap" class="mt-3"></div>
+            <div class="col-12 mt-3">
+                <div id="xy-drag-map"></div>
             </div>
-            <div class="col-8 mt-3">
-                <select class="form-control" id="motion-function-dropdown">
+            <div class="col-6 mt-3">
+                <select class="form-control" id="function-dropdown">
                     <option value="dot">Dot</option>
                     <option value="burst">Burst</option>
                     <option value="pulse">Pulse</option>
                 </select>
             </div>
-            <div class="col-4 mt-3">
+            <div class="col-3 mt-3">
                 <input id="ttl-input" type="number" min="1" max="999" placeholder="TTL"/>
             </div>
-            <div class="col-12 mt-3">
+            <div class="col-3 mt-3">
                 <input id="color-input" type="color" value="0xFF0000"/>
+            </div>
+            <div class="col-12 mt-3 text-center">
+                <button id="send-button" type="button" class="btn btn-primary">Send Command</button>
             </div>
         </div>
     </div>

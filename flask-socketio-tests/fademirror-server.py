@@ -24,6 +24,11 @@ def handle_xy_event(json):
     print(json)
     emit_ack('xy message ack')
 
+@socketio.on('thumb_control')
+def handle_thumb_control_event(json): 
+    print(json)
+    emit_ack('thumb_event ack')
+
 def emit_ack(data):
     emit('ack', data)
 
