@@ -90,7 +90,7 @@ function getPositionAccordingToSide(side, x, y) {
         position = x;
     else 
         position = y;
-    return mapRange(position, 0, 100, 1, 35);
+    return Math.round(mapRange(position, 0, 100, 1, 35));
 }
 
 function checkBounds(val) {
