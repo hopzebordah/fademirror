@@ -7,57 +7,12 @@ const color_picker = document.getElementById('color-input');
 const send_button = document.getElementById('send-button');
 
 let nextTickTime = 0;
-
 let dragging = false;
 
 window.addEventListener('DOMContentLoaded', (e) => {
-    configureXYDragMap(xy_drag_map);
     configureColorPicker(color_picker, xy_drag_map);
+    configureXYDragMap(xy_drag_map);
 });
-
-function configureXYDragMap(xy_map) {
-
-    xy_map.addEventListener('touchstart', (e) => {
-        dragging = true;
-    });
-
-    xy_map.addEventListener('touchmove', (e) => {
-        let date = new Date();
-        if (date.getTime() > nextTickTime) {
-            if (dragging) {
-                calculateAndSendThumbLocation(e.changedTouches[0], xy_map);
-                nextTickTime = date.getTime() + 125;
-            }
-        }
-    });
-
-    xy_map.addEventListener('touchend', (e) => {
-        dragging = false;
-    });
-
-}
-
-function calculateAndSendThumbLocation(event, xy_map) {
-    let rect = xy_map.getBoundingClientRect();
-
-    let mouseX = event.clientX - rect.left;
-    let mouseY = event.clientY - rect.top;
-
-    mouseX = Math.round(mapRange(mouseX, 0, (rect.right - rect.left), 0, 100));
-    mouseY = Math.round(mapRange(mouseY, 0, (rect.bottom - rect.top), 0, 100));
-
-    if (isNaN(mouseX) || isNaN(mouseY))
-        return;
-
-    mouseX = checkBounds(mouseX);
-    mouseY = checkBounds(mouseY);
-
-    if (DEBUG)
-        console.log(mouseX + ':' + mouseY);
-
-    let thumbControlData = buildThumbControlObject(mouseX, mouseY);
-    emit_thumb_command(thumbControlData);
-}
 
 function configureColorPicker(color_picker, xy_drag_map) {
     let randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
@@ -70,15 +25,72 @@ function configureColorPicker(color_picker, xy_drag_map) {
     });
 }
 
-function buildThumbControlObject(x, y) {
+function configureXYDragMap(xy_map) {
 
-    x = Math.round(mapRange(x, 0, 100, 1, 64));
-    y = Math.round(mapRange(y, 0, 100, 1, 64));
+    xy_map.addEventListener('touchstart', (e) => {
+        dragging = true;
+    });
 
+    xy_map.addEventListener('touchmove', (e) => mapTouchMoveEventListener(e, xy_map));
+
+    xy_map.addEventListener('touchend', (e) => {
+        dragging = false;
+    });
+
+}
+
+function mapTouchMoveEventListener(e, xy_map) {
+    let date = new Date();
+    if (date.getTime() > nextTickTime) {
+        if (dragging) {
+            calculateAndSendThumbLocation(e.changedTouches[0], xy_map);
+            nextTickTime = date.getTime() + 125;
+        }
+    }
+}
+
+function calculateAndSendThumbLocation(event, xy_map) {
+    let point = calculateUserTouchPoint(event, xy_map);
+
+    let closestSide = new XYMap().getClosestSide(point);
+
+    let thumbControlData = buildThumbControlObject(closestSide, point.x, point.y);
+    emit_thumb_command(thumbControlData);
+}
+
+function calculateUserTouchPoint(event, xy_map) {
+    let rect = xy_map.getBoundingClientRect();
+
+    let mouseX = event.clientX - rect.left;
+    let mouseY = event.clientY - rect.top;
+
+    mouseX = checkBounds(Math.round(mapRange(mouseX, 0, (rect.right - rect.left), 0, 100)));
+    mouseY = 100 - checkBounds(Math.round(mapRange(mouseY, 0, (rect.bottom - rect.top), 0, 100)));
+
+    if (DEBUG)
+        console.log(mouseX + ':' + mouseY);
+
+    if (isNaN(mouseX) || isNaN(mouseY))
+        return;
+
+    return new Point(mouseX, mouseY);
+}
+
+function buildThumbControlObject(side, x, y) {
+    const position = getPositionAccordingToSide(side, x, y);
     const func = function_dropdown.value;
     const ttl = Number(ttl_input.value);
     const rgb = color_picker.value;
-    return new ThumbControlData(x, y, func, ttl, rgb);
+    return new ThumbControlData(side, position, func, ttl, rgb);
+}
+
+function getPositionAccordingToSide(side, x, y) {
+    let position;
+    if (side === 'top' || side === 'bottom')
+        position = x;
+    else 
+        position = y;
+    return mapRange(position, 0, 100, 1, 35);
 }
 
 function checkBounds(val) {

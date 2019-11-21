@@ -7,10 +7,8 @@ socket.on('connect', function() {
 });
 
 socket.on('ack', (data) => {
-    if (DEBUG) {
-        console.log('[+] received ack!')
-        console.log('data: ' + data)
-    }
+    if (DEBUG)
+        console.log('[+] received ack!');
 });
 
 function emit_connected() {
