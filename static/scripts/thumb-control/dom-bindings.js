@@ -11,6 +11,7 @@ let dragging = false;
 let delay = 5;
 
 window.addEventListener('DOMContentLoaded', (e) => {
+    emit_clear();
     configureColorPicker(color_picker, xy_drag_map);
     configureXYDragMap(xy_drag_map);
     configureCancelButton(clear_button)
