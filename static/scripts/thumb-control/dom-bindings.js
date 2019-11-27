@@ -8,6 +8,7 @@ const send_button = document.getElementById('send-button');
 
 let nextTickTime = 0;
 let dragging = false;
+let delay = 20;
 
 window.addEventListener('DOMContentLoaded', (e) => {
     configureColorPicker(color_picker, xy_drag_map);
@@ -44,7 +45,7 @@ function mapTouchMoveEventListener(e, xy_map) {
     if (date.getTime() > nextTickTime) {
         if (dragging) {
             calculateAndSendThumbLocation(e.changedTouches[0], xy_map);
-            nextTickTime = date.getTime() + 125;
+            nextTickTime = date.getTime() + delay;
         }
     }
 }
@@ -90,7 +91,7 @@ function getPositionAccordingToSide(side, x, y) {
         position = x;
     else 
         position = y;
-    return Math.round(mapRange(position, 0, 100, 1, 35));
+    return position;
 }
 
 function checkBounds(val) {
