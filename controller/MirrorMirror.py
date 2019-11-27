@@ -106,11 +106,12 @@ def WaveUpdate(elapsedTime):
          wavePosition = wave.position
 
         #loop for now, get rid of and make it actulaly loop
-         if wavePosition < 55:
-            waves[i].position = 128
-         if wavePosition > 128:
+         if wavePosition < 0:
+            waves[i].position = LIGHTS * STRANDS
+         if wavePosition > LIGHTS * STRANDS:
             waves[i].position = 64
         
+         #print("index: " + str(i))
          waveColor = wave.color
          radius = wave.width/2
          fadeRadius = wave.fadeRadius
@@ -125,7 +126,11 @@ def WaveUpdate(elapsedTime):
                 brightPercentage = 1 - ((fadeStart - x)/fadeRadius)
             elif x > fadeEnd:
                 brightPercentage = (end - x)/fadeRadius
-            
+            #print(x)
+            if x >= STRANDS * LIGHTS:
+                continue
+            if x < 0:
+                continue
             #apply the new color
             waveLights[x].r += waveColor[0] * brightPercentage
             waveLights[x].g += waveColor[1] * brightPercentage
@@ -167,8 +172,8 @@ MAIN_SPEED = 0.1
 MAX_LIGHT = 400
 
 #GLOBAL LISTS FOR LAYERING
-pointLights = [Light(0,0,0,0)] * 512
-waveLights = [Light(0,0,0,0)] * 512
+pointLights = [Light(0,0,0,0)] * (LIGHTS * STRANDS)
+waveLights = [Light(0,0,0,0)] * (LIGHTS * STRANDS)
 
 
 client = opc.Client('localhost:7890')
@@ -176,12 +181,12 @@ client = opc.Client('localhost:7890')
 if __name__ == "__main__":
 
   
-    CreateWave(128,-5,10,2,(0,400,0))
-    CreateWave(64,25,5,2,(400,0,0))
-    CreateWave(64,50,5,2,(400,0,0))
-    CreateWave(64,75,5,2,(400,0,0))
-    CreateWave(64,3,10,10,(0,0,400))
-    CreateWave(100,-1,20,10,(0,400,346))
+ #def CreateWave(position,speed,width,fadeRadius,color):
+    CreateWave(3,1,10,2,(0,250,0))
+    CreateWave(3,5,5,2,(300,0,0))
+    CreateWave(60,-3,12,2,(0,0,250))
+    CreateWave(80,5,5,2,(200,0,400))
+
 #initialize lights list
     for i in range(len(pointLights)):    
         pointLights[i] = Light(0,0,0,0)
@@ -203,8 +208,8 @@ if __name__ == "__main__":
 
 
         #FINAL CONVERSION AND UPDATES
-        pixels = [(0, 0, 0)] * 512  
-        for i in range(len(pixels)):
+        finalColors = [(0, 0, 0)] * LIGHTS * STRANDS  
+        for i in range(len(finalColors)):
             
 
             #merge all of the layers
@@ -238,9 +243,31 @@ if __name__ == "__main__":
                 addB = 0
             if addB > MAX_LIGHT:
                 addB = MAX_LIGHT
-          
+
+            finalColors [i] = (addR,addG,addB)
+
+
+        #convert to pixels
+        pixels = [(0, 0, 0)] * 512  
+        strand = -1
+        for i in range(len(finalColors)):
+           
+            if i % LIGHTS == 0:
+                strand += 1
+
+            if strand == 0:
+                offset = 64 + i #((64 - LIGHTS) * strand) + (64) #extra lights passed because strand was less than channel max, plus 64
+            elif strand == 1:
+                 offset = 128 + (i - (LIGHTS * strand)) #extra lights passed because strand was less than channel max, plus 64
+            elif strand == 2:
+                 offset = (64 * 4) + (i - (LIGHTS * strand)) #extra lights passed because strand was less than channel max, plus 64
+            elif strand == 3: 
+                 offset = (64 * 5) + (i - (LIGHTS * strand)) #extra lights passed because strand was less than channel max, plus 64
+            #merge all of the layers      
           #convert to pixel tuples
-            pixels[i] = (addR,addG,addB)
+            colorNeeded = finalColors[i]
+            print("strand: " + str(strand) + "final color index: " + str(i) + "made to be: " + str(i + offset))
+            pixels[offset] = (colorNeeded[0],colorNeeded[1],colorNeeded[2])
      
 
             
