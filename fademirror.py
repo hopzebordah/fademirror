@@ -30,6 +30,12 @@ def handle_connected_event(json):
     print('[+] client websocket connected')
     emit_ack('connected ack')
 
+@socketio.on('clear')
+def clear_mirror():
+    print('[+] client requested clear')
+    fadeController.clear()
+    emit_ack('clear ack')
+
 @socketio.on('thumb_control')
 def handle_thumb_control_event(json): 
     message = ThumbControlMessage()

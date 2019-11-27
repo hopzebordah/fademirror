@@ -6,7 +6,7 @@ class FadeCandyController:
     def __init__(self):
         print('init!')
         timestamp = datetime.now()
-        thread = Thread(target = initialzeMirror)
+        thread = Thread(target = initializeMirror)
         thread.start()
 
     def mapRange(self,value, low1, high1, low2, high2) :
@@ -19,6 +19,9 @@ class FadeCandyController:
             return 2
         if "left" == input:
             return 0
+
+    def clear(self): 
+        print('from fadecontroller: clear the mirror!')
 
 #CreateWave(3,1,10,2,(0,250,0))
 #def PointLight(position,r,g,b,fadeTime):

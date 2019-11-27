@@ -4,7 +4,7 @@ const xy_drag_map = document.getElementById('xy-drag-map');
 const function_dropdown = document.getElementById('function-dropdown');
 const ttl_input = document.getElementById('ttl-input');
 const color_picker = document.getElementById('color-input');
-const send_button = document.getElementById('send-button');
+const clear_button = document.getElementById('clear-button');
 
 let nextTickTime = 0;
 let dragging = false;
@@ -13,7 +13,14 @@ let delay = 5;
 window.addEventListener('DOMContentLoaded', (e) => {
     configureColorPicker(color_picker, xy_drag_map);
     configureXYDragMap(xy_drag_map);
+    configureCancelButton(clear_button)
 });
+
+function configureCancelButton(cancelButton) {
+    cancelButton.addEventListener('click', (e) => {
+        emit_clear();
+    });
+}
 
 function configureColorPicker(color_picker, xy_drag_map) {
     let randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
