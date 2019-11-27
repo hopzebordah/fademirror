@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 
 
-import controller.opc as opc
+import opc as opc
 import time
 from datetime import datetime
 import keyboard 
