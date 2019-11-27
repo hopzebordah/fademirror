@@ -4,7 +4,8 @@ from flask import Flask
 from flask import render_template
 from flask_socketio import SocketIO, send, emit
 
-from lib.fadecontroller import *
+from dto.thumbcontrolmessage import *
+from controller.fadecontroller import *
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
@@ -29,15 +30,10 @@ def handle_connected_event(json):
     print('[+] client websocket connected')
     emit_ack('connected ack')
 
-@socketio.on('xy')
-def handle_xy_event(json):
-    fadeController.printStatus()
-    emit_ack('xy message ack')
-
 @socketio.on('thumb_control')
 def handle_thumb_control_event(json): 
     print(json)
-    fadeController.printStatus()
+    fadeController.thumb_control(new ThumbControlMessage(json))
     emit_ack('thumb_event ack')
 
 def emit_ack(data):

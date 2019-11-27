@@ -1,6 +1,5 @@
 eventlet
 Flask
 Flask-SocketIO
-opc
 keyboard
 

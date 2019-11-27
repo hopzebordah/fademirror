@@ -2,7 +2,8 @@
 #!/usr/bin/env python
 
 
-import opc, time
+import opc as opc
+import time
 from datetime import datetime
 import keyboard 
 import math
