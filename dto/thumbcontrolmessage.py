@@ -1,14 +1,17 @@
+import json
+
 class ThumbControlMessage:
 
-    side = ''
-    position = 0
-    mode = ''
-    ttl = 0
-    rgb = 0
+    def __init__(self):
+        self.side = ''
+        self.position = 0
+        self.mode = ''
+        self.ttl = 0
+        self.rgb = ''
 
-    def ThumbControlMessage(self, json):
+    def setValues(self, json):
         self.side = json['side']
-        self.position = int(json['position'])
+        self.position = json['position']
         self.mode = json['mode']
-        self.ttl = int(json['ttl'])
-        self.rgb = int(json['rgb'])
+        self.ttl = json['ttl']
+        self.rgb = json['rgb']

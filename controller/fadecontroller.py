@@ -7,7 +7,7 @@ class FadeCandyController:
 
     def thumb_control(self, thumbControlCommand):
         print('side: ' + thumbControlCommand.side)
-        print('position: ' + int(thumbControlCommand.position))
+        print('position: ' + str(thumbControlCommand.position))
         print('mode: ' + thumbControlCommand.mode)
-        print('ttl: ' + int(thumbControlCommand.ttl))
-        print('rgb: ' + int(thumbControlCommand.rgb))
+        print('ttl: ' + str(thumbControlCommand.ttl))
+        print('rgb: ' + thumbControlCommand.rgb)
