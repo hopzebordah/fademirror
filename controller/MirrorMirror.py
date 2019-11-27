@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 
 
-import opc as opc
+import controller.opc as opc
 import time
 from datetime import datetime
 import keyboard 
@@ -178,14 +178,11 @@ waveLights = [Light(0,0,0,0)] * (LIGHTS * STRANDS)
 
 client = opc.Client('localhost:7890')
 
-if __name__ == "__main__":
-
+def initialzeMirror():
+    timestamp = datetime.now()
   
  #def CreateWave(position,speed,width,fadeRadius,color):
-    CreateWave(3,1,10,2,(0,250,0))
-    CreateWave(3,5,5,2,(300,0,0))
-    CreateWave(60,-3,12,2,(0,0,250))
-    CreateWave(80,5,5,2,(200,0,400))
+
 
 #initialize lights list
     for i in range(len(pointLights)):    
@@ -266,7 +263,7 @@ if __name__ == "__main__":
             #merge all of the layers      
           #convert to pixel tuples
             colorNeeded = finalColors[i]
-            print("strand: " + str(strand) + "final color index: " + str(i) + "made to be: " + str(i + offset))
+           
             pixels[offset] = (colorNeeded[0],colorNeeded[1],colorNeeded[2])
      
 
