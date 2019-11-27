@@ -10,11 +10,13 @@ import math
 
 
 class Light:
-    def __init__(self, r,g,b, fadeTime):
+    def __init__(self, r,g,b, fadeTime = 5):
          self.r = r
          self.g = g
          self.b = b
          self.fadeTime = fadeTime
+         if self.fadeTime == False:
+             self.fadeTime = 0.5
          self.startColor = (r,g,b)
 
     def __add__(self, o): 
@@ -80,12 +82,14 @@ waveColors = [(0,0,400),(400,0,0)]
 
 
 class Wave:
-    def __init__(self, position,speed,width,fadeRadius,color):
+    def __init__(self, position,speed,width,fadeRadius,color, fadeTime = 3):
          self.position = position
          self.speed = speed
          self.width = width
          self.fadeRadius = fadeRadius
          self.color = color
+         self.fadeTime = fadeTime
+         self.startFade = fadeTime
 
     
         
@@ -93,17 +97,36 @@ class Wave:
 waves = []
 def WaveUpdate(elapsedTime):
 
+
+
     #reset
      for i in range(len(waveLights)):    
         waveLights[i] = Light(0,0,0,0)
 
+    
+     
      #update each wave position
      for i in range(len(waves)):
         waves[i].position += (waves[i].speed * elapsedTime)
+        
 
      for i in range(len(waves)):
+
+        
+
          wave = waves[i]
          wavePosition = wave.position
+
+          wave.fadeTime -= elapsedTime
+          fadeTime = wave.fadeTime / wave.startTime 
+          if fadeTime < 0:
+              return
+
+
+         if wave.fadeTime <= 0:
+            return
+        #fade out lights over given time
+         fadeFactor = elapsedTime/wave.fadeTime
 
         #loop for now, get rid of and make it actulaly loop
          if wavePosition < 0:
@@ -132,9 +155,9 @@ def WaveUpdate(elapsedTime):
             if x < 0:
                 continue
             #apply the new color
-            waveLights[x].r += waveColor[0] * brightPercentage
-            waveLights[x].g += waveColor[1] * brightPercentage
-            waveLights[x].b += waveColor[2] * brightPercentage
+            waveLights[x].r += waveColor[0] * brightPercentage * fadeFactor
+            waveLights[x].g += waveColor[1] * brightPercentage * fadeFactor
+            waveLights[x].b += waveColor[2] * brightPercentage * fadeFactor
             #print(brightPercentage)
 
 
@@ -177,6 +200,7 @@ waveLights = [Light(0,0,0,0)] * (LIGHTS * STRANDS)
 
 
 client = opc.Client('localhost:7890')
+
 
 def initialzeMirror():
     timestamp = datetime.now()

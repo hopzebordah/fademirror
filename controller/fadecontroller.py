@@ -1,12 +1,13 @@
-from controller.MirrorMirror import *
+#from controller.MirrorMirror import *
+import controller.MirrorMirror as lib
 from threading import Thread
 
 class FadeCandyController: 
 
     def __init__(self):
         print('init!')
-        timestamp = datetime.now()
-        thread = Thread(target = initializeMirror)
+        timestamp = lib.datetime.now()
+        thread = Thread(target = lib.initialzeMirror)
         thread.start()
 
     def mapRange(self,value, low1, high1, low2, high2) :
@@ -32,24 +33,24 @@ class FadeCandyController:
         
         #print(rgb)
 
-        light = self.mapRange(thumbControlCommand.position , 1, 100, 0, LIGHTS)
+        light = self.mapRange(thumbControlCommand.position , 1, 100, 0, lib.LIGHTS)
         if thumbControlCommand.side == "right":
-            light = LIGHTS - light
+            light = lib.LIGHTS - light
         side = self.getSide(thumbControlCommand.side)
-        print("light: " + str(light) + " side: " + str(side) + " lights: " + str(LIGHTS))
+        print("light: " + str(light) + " side: " + str(side) + " lights: " + str(lib.LIGHTS))
         multiplier = 400.0/255.0
         mode = thumbControlCommand.mode
-        index = int(light + (side * LIGHTS))
+        index = int(light + (side * lib.LIGHTS))
         r = rgb[0] * multiplier
         g = rgb[1] * multiplier
         b = rgb[2] * multiplier
         if mode == "dot":
-            PointLight(index, r,g,b,thumbControlCommand.ttl)
+            lib.PointLight(index, r,g,b,thumbControlCommand.ttl)
         elif mode == "burst":
-            CreateWave(index,4,5,2,(r,g,b))
+            lib.CreateWave(index,4,5,2,(r,g,b))
         elif mode == "pulse":
-            CreateWave(index,15,2,2,(r,g,b))
-            CreateWave(index,-15,2,2,(r,g,b))
+            lib.CreateWave(index,15,2,2,(r,g,b))
+            lib.CreateWave(index,-15,2,2,(r,g,b))
 
         print('side: ' + thumbControlCommand.side)
         print('position: ' + str(thumbControlCommand.position))
