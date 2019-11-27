@@ -8,7 +8,7 @@ const send_button = document.getElementById('send-button');
 
 let nextTickTime = 0;
 let dragging = false;
-let delay = 20;
+let delay = 75;
 
 window.addEventListener('DOMContentLoaded', (e) => {
     configureColorPicker(color_picker, xy_drag_map);

@@ -32,8 +32,9 @@ def handle_connected_event(json):
 
 @socketio.on('thumb_control')
 def handle_thumb_control_event(json): 
-    print(json)
-    fadeController.thumb_control(new ThumbControlMessage(json))
+    message = ThumbControlMessage()
+    message.setValues(json)
+    fadeController.thumb_control(message)
     emit_ack('thumb_event ack')
 
 def emit_ack(data):
