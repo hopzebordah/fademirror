@@ -1,14 +1,14 @@
 # fademirror
-final project for csc 565 - fall 2019
+final project for csc 565 - fall 2019    
 
-python scripts must be run with python3
-to install required python modules, run: 
-`pip3 install -r requirements.txt`
+python scripts must be run with python3   
+to install required python modules, run:    
+`pip3 install -r requirements.txt`   
 
 
-run fademirror.py in python virtual environment:
-`$source venv/bin/activate`
-`$python3 fademirror.py`
+run fademirror.py in python virtual environment:   
+`$source venv/bin/activate`   
+`$python3 fademirror.py`   
 
 
 Start Fadecandy server to communicate with Fadecandy Dithering Controller   
