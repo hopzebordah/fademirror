@@ -1,14 +1,14 @@
 
 #!/usr/bin/env python
 
-
+from random import random
 import controller.opc as opc
 import time
 from datetime import datetime
 import keyboard 
 import math
 
-
+#a light on the led strip
 class Light:
     def __init__(self, r,g,b, fadeTime = 5):
          self.r = r
@@ -16,7 +16,7 @@ class Light:
          self.b = b
          self.fadeTime = fadeTime
          if self.fadeTime == False:
-             self.fadeTime = 0.5
+             self.fadeTime = 3
          self.startColor = (r,g,b)
 
     def __add__(self, o): 
@@ -25,6 +25,8 @@ class Light:
         self.b += o.b
         return self
 
+
+    #updates the lights brightness to fade out over the specified time
     def update(self,elapsedTime):
 
         #we can set fade time to be less than 0 so we skip the update
@@ -73,14 +75,9 @@ class Light:
          self.fadeTime = fadeTime
 
 
-#UPDATE FUNCTIONS
-wavePositions = [64,128]
-waveSpeeds = [1,-3]
-waveWidths = [10,5]
-waveFadeRadius = [4,1]
-waveColors = [(0,0,400),(400,0,0)]
 
 
+#handles a wave running through the mirror
 class Wave:
     def __init__(self, position,speed,width,fadeRadius,color, fadeTime = 3):
          self.position = position
@@ -89,12 +86,22 @@ class Wave:
          self.fadeRadius = fadeRadius
          self.color = color
          self.fadeTime = fadeTime
-         self.startFade = fadeTime
+         self.startTime = fadeTime
 
     
-        
+def clear():
+    global pointLights
+    global waveLights
+    pointLights = [Light(0,0,0,0)] * (LIGHTS * STRANDS)
+    waveLights = [Light(0,0,0,0)] * (LIGHTS * STRANDS)
+    waves.clear()
 
+
+
+#an array containing the current wave objects
 waves = []
+
+#updates the waves position depending over time. called every frame 
 def WaveUpdate(elapsedTime):
 
 
@@ -117,14 +124,10 @@ def WaveUpdate(elapsedTime):
          wave = waves[i]
          wavePosition = wave.position
 
-          wave.fadeTime -= elapsedTime
-          fadeTime = wave.fadeTime / wave.startTime 
-          if fadeTime < 0:
-              return
-
-
-         if wave.fadeTime <= 0:
-            return
+         
+     
+            
+    
         #fade out lights over given time
          fadeFactor = elapsedTime/wave.fadeTime
 
@@ -155,9 +158,9 @@ def WaveUpdate(elapsedTime):
             if x < 0:
                 continue
             #apply the new color
-            waveLights[x].r += waveColor[0] * brightPercentage * fadeFactor
-            waveLights[x].g += waveColor[1] * brightPercentage * fadeFactor
-            waveLights[x].b += waveColor[2] * brightPercentage * fadeFactor
+            waveLights[x].r += waveColor[0] * brightPercentage
+            waveLights[x].g += waveColor[1] * brightPercentage
+            waveLights[x].b += waveColor[2] * brightPercentage 
             #print(brightPercentage)
 
 
@@ -170,26 +173,29 @@ def WaveUpdate(elapsedTime):
 
 
    
-
+#updates the Lights brightness
 def PointLightUpdate(elapsedTime):
     for i in range(len(pointLights)):
         pointLights[i].update(elapsedTime)
 
 
 
-#ALEX will call these functions
+#--------------------------USER CALLED FUNCTIONS------
+#these functions can be called to add lights or waves to the mirror
 def PointLight(position,r,g,b,fadeTime):
         pointLights[position] = Light(r,g,b,fadeTime)
 
 def CreateWave(position,speed,width,fadeRadius,color):
     waves.append(Wave(position,speed,width,fadeRadius,color))
+#-----------------------------------------------------
+
 
 #globals
 deltaTime = 0.0
 timestamp = datetime.now()
 
 # constants
-STRANDS = 3
+STRANDS = 4
 LIGHTS = 35
 MAIN_SPEED = 0.1
 MAX_LIGHT = 400
@@ -199,36 +205,61 @@ pointLights = [Light(0,0,0,0)] * (LIGHTS * STRANDS)
 waveLights = [Light(0,0,0,0)] * (LIGHTS * STRANDS)
 
 
-client = opc.Client('localhost:7890')
+client = opc.Client('localhost:7890') #opc is always on this address
+
+rainbows = []
 
 
-def initialzeMirror():
+#initializes the mirror, then infinitely loops over and over to add all the colors at current position together
+def initializeMirror():
+    frequency = 0.3
+
+
+
+    #INITIALZIE MIRROR--------
+    #for future use, creates an array of rainbow colors
+    for i in range (0,32):
+        red   = math.sin(frequency*i + 0) * 127 + 128
+        green = math.sin(frequency*i + 2) * 127 + 128
+        blue  = math.sin(frequency*i + 4) * 127 + 128
+
+        rainbows.append((red,green,blue))
+
+
+
+
     timestamp = datetime.now()
   
- #def CreateWave(position,speed,width,fadeRadius,color):
 
 
-#initialize lights list
+    #initialize lights list
     for i in range(len(pointLights)):    
         pointLights[i] = Light(0,0,0,0)
 
    
+ 
+    #-----------------------------
 
+
+    #MIRROR UPDATE LOOP
     while True:
+
+        
+
         # calculate elapsed time
         newTime = datetime.now()
         elapsedTime = newTime - timestamp
         timestamp = newTime
         elapsedTime = elapsedTime.microseconds / 1000000
 
-        #call all update functions
+        #Update all lights this frame
         WaveUpdate(elapsedTime)
         PointLightUpdate(elapsedTime)
 
      
 
 
-        #FINAL CONVERSION AND UPDATES
+        #FINAL CONVERSION - adds all light layers on top of each other
         finalColors = [(0, 0, 0)] * LIGHTS * STRANDS  
         for i in range(len(finalColors)):
             
@@ -268,7 +299,7 @@ def initialzeMirror():
             finalColors [i] = (addR,addG,addB)
 
 
-        #convert to pixels
+        #convert to pixels for opc lbrary. opc library takes lights at position 0-64*8. 8 channels and 64 lights on each channel. we must convert depending on our setup
         pixels = [(0, 0, 0)] * 512  
         strand = -1
         for i in range(len(finalColors)):
@@ -276,6 +307,7 @@ def initialzeMirror():
             if i % LIGHTS == 0:
                 strand += 1
 
+            #offsets needed because our fadecandy channels were broken. we used channels 1,2,4,5 out of 0-7
             if strand == 0:
                 offset = 64 + i #((64 - LIGHTS) * strand) + (64) #extra lights passed because strand was less than channel max, plus 64
             elif strand == 1:
@@ -284,8 +316,7 @@ def initialzeMirror():
                  offset = (64 * 4) + (i - (LIGHTS * strand)) #extra lights passed because strand was less than channel max, plus 64
             elif strand == 3: 
                  offset = (64 * 5) + (i - (LIGHTS * strand)) #extra lights passed because strand was less than channel max, plus 64
-            #merge all of the layers      
-          #convert to pixel tuples
+
             colorNeeded = finalColors[i]
            
             pixels[offset] = (colorNeeded[0],colorNeeded[1],colorNeeded[2])
@@ -296,7 +327,7 @@ def initialzeMirror():
 
       
 
-
+        #send light data to lights
         client.put_pixels(pixels)
 
         time.sleep(MAIN_SPEED)

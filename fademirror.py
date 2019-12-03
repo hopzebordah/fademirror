@@ -31,7 +31,7 @@ def handle_connected_event(json):
     emit_ack('connected ack')
 
 @socketio.on('clear')
-def clear_mirror():
+def clear_mirror(json):
     print('[+] client requested clear')
     fadeController.clear()
     emit_ack('clear ack')
