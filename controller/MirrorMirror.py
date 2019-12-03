@@ -260,7 +260,7 @@ def initializeMirror():
 
 
         #FINAL CONVERSION - adds all light layers on top of each other
-        finalColors = [(0, 0, 0)] * LIGHTS * STRANDS  
+        finalColors = [(0, 0, 0)] * LIGHTS * STRANDS  #this array will hold the final layered colors
         for i in range(len(finalColors)):
             
 
