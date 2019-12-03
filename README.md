@@ -7,13 +7,13 @@ to install required python modules, run:
 
 
 run fademirror.py in python virtual environment:
-$source venv/bin/activate
-$python3 fademirror.py
+`$source venv/bin/activate`
+`$python3 fademirror.py`
 
 
-Start Fadecandy server to communicate with Fadecandy Dithering Controller
-Info on Fadecandy Dithering controller can be found here:
-https://www.adafruit.com/product/1689
+Start Fadecandy server to communicate with Fadecandy Dithering Controller   
+Info on Fadecandy Dithering controller can be found here:   
+https://www.adafruit.com/product/1689   
 
-Their github contains the fadecandy server
+Their github contains the fadecandy server   
 github: https://github.com/scanlime/fadecandy
